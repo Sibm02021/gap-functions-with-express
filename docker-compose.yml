@@ -1,0 +1,35 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:latest
+    restart: always
+    environment:
+      POSTGRES_DB: wanderer
+      POSTGRES_USER: wanderer-admin
+      POSTGRES_PASSWORD: wanderer-is-wanderer
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  # Will need to add the knex migration command as well
+  wanderer-api:
+    image: node:latest
+    working_dir: /app
+    command: sh -c "npm i && npm run start"
+    volumes:
+      - ./:/app
+    depends_on:
+      - postgres
+    env_file:
+      - .env
+    ports:
+      - "3000:3000"
+    expose:
+      - "3000"
+
+
+
+volumes:
+  postgres_data:

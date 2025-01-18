@@ -1,21 +1,30 @@
 {
-  "name": "gcp-functions-with-express",
+  "name": "wanderer-backend",
   "version": "1.0.0",
-  "description": "A sample project that uses GCP HTTP Functions with the Express framework.",
+  "description": "",
   "main": "build/index.js",
   "scripts": {
-    "start": "npx tsc && npx functions-framework --port=3000 --target=messagesAPI [--signature-type=http] && node build/index.js"
+    "start": "tsc && node build/index.js",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
     "@types/express": "^4.17.21",
-    "@types/node": "^20.11.20",
+    "@types/jsonwebtoken": "^9.0.7",
+    "@types/node": "^20.17.12",
+    "@types/pg": "^8.11.10",
     "typescript": "^5.3.3"
   },
   "dependencies": {
     "@google-cloud/functions-framework": "^3.3.0",
-    "express": "^4.18.2"
+    "ajv": "^8.17.1",
+    "ajv-formats": "^3.0.1",
+    "express": "^4.18.2",
+    "jsonwebtoken": "^9.0.2",
+    "knex": "^3.1.0",
+    "pg": "^8.13.1"
   }
 }

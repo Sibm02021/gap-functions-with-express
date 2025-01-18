@@ -1,18 +1,35 @@
 import express, {Request, Response} from 'express';
-import * as functions from "@google-cloud/functions-framework";
+import validateToken from './auth';
+import {playlistsRouter, profileRouter} from "./routes";
+import knex from "knex";
+import path from "path";
 
 const app = express();
 
-app.get("/message", (req: Request, res: Response) => {
-    res.status(200).send("Hello, World!");
-});
+const knexConfig = require(path.join(__dirname, '../knexfile'));
 
-app.get("/messages", (req: Request, res: Response) => {
-    res.status(200).send(["Hello, World!", "Goodbye, World!"]);
-});
+const start = async () => {
 
-app.post("/message", (req: Request, res: Response) => {
-    res.status(201).send("Added message");
-});
+    try {
 
-functions.http('messagesAPI', app);
+        const client = knex(knexConfig);
+        await client.migrate.latest();
+
+        app.use(express.json());
+        app.use('/health', (req: Request, res: Response) => {
+            res.send('OK');
+        });
+
+        app.use('/api/profile', validateToken, profileRouter(client));
+        app.use('/api/playlists', validateToken, playlistsRouter(client));
+        app.listen(process.env.PORT || 3000, () => {
+            console.log('Server running on port 3000');
+        });
+
+    } catch (error) {
+        console.error(error);
+        process.exit(1);
+    }
+}
+
+start()
